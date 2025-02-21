@@ -1,0 +1,78 @@
+services:
+  api:
+    container_name: api
+    build:
+      dockerfile: deploy/Dockerfile
+      context: api_service
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - clickhouse
+
+  scrapper:
+    container_name: scrapper
+    build:
+      dockerfile: deploy/Dockerfile
+      context: exchange_service
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - clickhouse
+    volumes:
+      - ./exchange_service/log.log:/app/log.log
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DATABASE: default
+      PGDATA: /data/postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/data/postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "default", "-U", "postgres" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  clickhouse:
+    container_name: clickhouse
+    image: clickhouse/clickhouse-server:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: rezin.p@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "127.0.0.1:5050:80"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+
+
+volumes:
+  pgdata:
+  pgadmin:
+  clickhouse_data:
