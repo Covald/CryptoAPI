@@ -2,6 +2,7 @@ import asyncio
 import time
 
 from config import config
+from database import postgres, clickhouse
 
 print(config.model_dump())
 from sources.bybit import Bybit
@@ -17,21 +18,16 @@ async def update_coins(bybit: Bybit):
         await asyncio.sleep(round(60 - (time.time() - st)))
 
 
-# ToDo
-async def update_depth(bybit: Bybit):
-    from datetime import datetime
-    while True:
-        st = time.time()
-        print(f"Calc depth - {datetime.now()}")
-        await asyncio.sleep(round(3600 - (time.time() - st)))
-
-
 async def main():
+    await asyncio.sleep(10)
+    await postgres.connect()
+    await clickhouse.connect()
     bybit = Bybit()
-    await asyncio.gather(
-        update_coins(bybit),
-        update_depth(bybit)
-    )
+    while True:
+        ts = time.time()
+
+        await update_coins(bybit)
+        await asyncio.sleep(60 - int(time.time()-ts))
 
 
 if __name__ == "__main__":

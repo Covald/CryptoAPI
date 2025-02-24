@@ -8,20 +8,23 @@ class Types(StrEnum):
     spot = "spot"
     linear = "linear"
     inverse = "inverse"
+    option = "option"
 
 
 class Coin(BaseModel):
-    market_id: int | None
     symbol: str
+    market_name: int | str | None
     type: Types
     price: float
-    index_price: float | None
-    volume: float
     spread: float | None
+    index_price: float | None
+    volume_24h: float
     open_interest: float | None
     funding_rate: float | None
     ts: datetime
 
+class ExtendedCoin(Coin):
+    volume_perc:float|None = None
 
 class CoinDepth(BaseModel):
     coin_id: int

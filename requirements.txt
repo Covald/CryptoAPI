@@ -9,6 +9,7 @@ arrow==1.3.0
 asttokens==3.0.0
 async-lru==2.0.4
 asynch==0.2.5
+asyncpg==0.30.0
 attrs==25.1.0
 babel==2.17.0
 beautifulsoup4==4.13.3
@@ -18,6 +19,7 @@ cffi==1.17.1
 charset-normalizer==3.4.1
 ciso8601==2.3.2
 click==8.1.8
+clickhouse-connect==0.8.15
 comm==0.2.2
 debugpy==1.8.12
 decorator==5.1.1
@@ -41,7 +43,6 @@ json5==0.10.0
 jsonpointer==3.0.0
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
-jupyter==1.1.1
 jupyter-console==6.6.3
 jupyter-events==0.12.0
 jupyter-lsp==2.2.5
@@ -115,4 +116,5 @@ webencodings==0.5.1
 websocket-client==1.8.0
 widgetsnbextension==4.0.13
 yarl==1.18.3
+zstandard==0.23.0
 zstd==1.5.6.3

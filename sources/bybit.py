@@ -12,15 +12,20 @@ def _map(coin_data: dict) -> list[Coin]:
     category = coin_data['result']['category']
     result = []
     for coin in coin_data['result']['list']:
-        tmp = {'market_id': None,
+        ask = coin.get('ask1Price')
+        bid = coin.get('bid1Price')
+        spread = None
+        if ask and bid:
+            spread = round((float(ask) - float(bid)) / float(ask) * 100,7)
+        tmp = {'market_name': None,
                'symbol': coin['symbol'],
                'type': category,
                'price': coin['lastPrice'],
-               'index_price': coin.get('usdIndexPrice', -1),
-               'volume': coin['volume24h'],
-               'spread': -1,
-               'open_interest': coin.get('openInterestValue', -1) or -1,
-               'funding_rate': coin.get('fundingRate', -1) or -1,
+               'index_price': coin.get('usdIndexPrice', None),
+               'volume_24h': coin['volume24h'],
+               'spread': spread,
+               'open_interest': coin.get('openInterestValue', None) or None,
+               'funding_rate': coin.get('fundingRate', None) or None,
                'ts': timestamp}
         result.append(Coin(
             **tmp
