@@ -1,16 +1,28 @@
 services:
+  sheet_uploader:
+    container_name: sheet_uploader
+    build:
+      dockerfile: deploy/Dockerfile
+      context: .
+    entrypoint: [ "python3.13", "test.py" ]
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - clickhouse
+
   api:
     container_name: api
     build:
       dockerfile: deploy/Dockerfile
       context: .
-    entrypoint:  ["python3.13", "main_api.py"]
+    entrypoint: [ "python3.13", "main_api.py" ]
     restart: unless-stopped
     ports:
       - "0.0.0.0:80:8000"
     env_file:
       - .env
-
     volumes:
       - .:/app
     depends_on:
@@ -22,7 +34,7 @@ services:
     build:
       dockerfile: deploy/Dockerfile
       context: .
-    entrypoint:  ["python3.13", "main_scrapper.py"]
+    entrypoint: [ "python3.13", "main_scrapper.py" ]
     restart: unless-stopped
     env_file:
       - .env
